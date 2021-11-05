@@ -13,36 +13,35 @@ class Simple_RNN(object):
     def __init__(self, sizes, steps):
         self.num_layers = len(sizes)
         self.sizes = sizes
-        self.wx = np.random.randn(sizes[1], sizes[0])
+        self.wx = np.random.randn(sizes[0], sizes[1])
         self.wh = np.random.randn(sizes[1], sizes[1])
-        self.bh = np.random.randn(sizes[1],1)
-        self.wy = np.random.randn(sizes[2], sizes[1])
-        self.by = np.random.randn(sizes[2],1)
+        self.bh = np.random.randn(sizes[1], 1)
+        self.wy = np.random.randn(sizes[1], sizes[2])
+        self.by = np.random.randn(sizes[2], 1)
         self.h0 = np.zeros(sizes[1])
         self.steps = steps
-
-    def feedforward(self, x):
-        h_temp = np.tanh(np.dot(self.wx,x[0]) + self.h0 + self.bh.reshape(-1))
-        for i in range(self.steps-1):
-            h_temp = np.tanh(np.dot( self.wx,x[i+1]) + np.dot(self.wh,h_temp) + self.bh.reshape(-1))
-        result = self.sigmoid(np.dot(self.wy,h_temp) + self.by.reshape(-1))
-        return result 
-    
-    def sigmoid(self, z):
-        return 1.0/(1.0+np.exp(-z))
+        self.weight = [self.wx,self.wh,self.bh.reshape(-1),self.wy,self.by.reshape(-1)]
 
     def score(self, X, y):
         total_score=0
+        model_2 = Sequential()
+        model_2.add(SimpleRNN(units=24, input_shape=(8,1), activation="tanh"))
+        model_2.add(Dense(8, activation="sigmoid"))
+        model_2.set_weights(self.weight)
         for i in range(X.shape[0]):
-            predicted = self.feedforward(X[i])
+            predicted = model_2.predict(X[i:i+1]).reshape(-1)
             actual = y[i]
             total_score += np.sum(np.power(predicted-actual,2))  # mean-squared error
         return total_score/X.shape[0]
 
     def accuracy(self, X, y):
         accuracy = 0
+        model_2 = Sequential()
+        model_2.add(SimpleRNN(units=24, input_shape=(8,1), activation="tanh"))
+        model_2.add(Dense(8, activation="sigmoid"))
+        model_2.set_weights(self.weight)
         for i in range(X.shape[0]):
-            output = self.feedforward(X[i])
+            output = model_2.predict(X[i:i+1]).reshape(-1)
             condition = True
             for j in range(len(output)):
                 output[j] = round(output[j])
@@ -53,7 +52,7 @@ class Simple_RNN(object):
             if condition:
                 accuracy += 1
         return accuracy / X.shape[0] * 100
-
+        
 class Simple_RNN_GA:
 
     def __init__(self, n_pops, net_size, mutation_rate, crossover_rate, X, y, X_test, y_test, steps):
