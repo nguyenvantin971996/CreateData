@@ -9,7 +9,7 @@ import time
 from sklearn.preprocessing import StandardScaler
 import random
 class Simple_RNN(object):
-
+    # thay doi
     def __init__(self, sizes, steps):
         self.num_layers = len(sizes)
         self.sizes = sizes
