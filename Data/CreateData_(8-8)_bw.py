@@ -9,6 +9,13 @@ weight_map={
 	4:{1:0,2:0,3:0,5:0},
 	5:{2:0,3:0,4:0}
 }
+weight_map_1={
+	1:{2:0,3:0,4:0},
+	2:{1:0,4:0,5:0},
+	3:{1:0,4:0,5:0},
+	4:{1:0,2:0,3:0,5:0},
+	5:{2:0,3:0,4:0}
+}
 values = [10,20,30,40,50,60,70,80,90]
 vertices = [1,2,3,4,5]
 columns = []
@@ -22,6 +29,7 @@ cols=[]
 for x in columns:
 	strx = "X"+repr(x)
 	cols.append(strx)
+cols_Y = []
 for x in columns:
 	strx = "Y"+repr(x)
 	cols.append(strx)
@@ -42,7 +50,10 @@ for i in range(10000):
 			for col in cols:
 				if x == col:
 					data[col] = weight_map[node_2][node_1]
-	alg = DijkstraAlgorithm(weight_map,vertices)
+	for node_1 in weight_map.keys():
+		for node_2 in weight_map[node_1].keys():
+			weight_map_1[node_1][node_2] = 100000000/weight_map[node_1][node_2]
+	alg = DijkstraAlgorithm(weight_map_1,vertices)
 	path_vertices = []
 	path_vertices = alg.compute_shortest_path(1,5)
 	path_links = []
@@ -63,4 +74,4 @@ for i in range(10000):
 	for node_1 in weight_map.keys():
 		for node_2 in weight_map[node_1].keys():
 			weight_map[node_1][node_2] = 0
-df.to_csv('data_8.csv',index=False)
+df.to_csv('data_bandwidth.csv',index=False)
