@@ -1,15 +1,8 @@
 import random
 import csv
 import pandas as pd
-from DijkstraAlgorithm import DijkstraAlgorithm 
+from YenAlgorithm import YenAlgorithm 
 weight_map={
-	1:{2:0,3:0,4:0},
-	2:{1:0,4:0,5:0},
-	3:{1:0,4:0,5:0},
-	4:{1:0,2:0,3:0,5:0},
-	5:{2:0,3:0,4:0}
-}
-weight_map_1={
 	1:{2:0,3:0,4:0},
 	2:{1:0,4:0,5:0},
 	3:{1:0,4:0,5:0},
@@ -30,12 +23,13 @@ for x in columns:
 	strx = "X"+repr(x)
 	cols.append(strx)
 cols_Y = []
-for x in columns:
-	strx = "Y"+repr(x)
-	cols.append(strx)
-	cols_Y.append(strx)
+for i in range(1,5):
+	for x in columns:
+		strx = "Y"+str(i)+repr(x)
+		cols.append(strx)
+		cols_Y.append(strx)
 df = pd.DataFrame(columns=cols)
-for i in range(10000):
+for ii in range(10000):
 	for node_1 in weight_map.keys():
 		for node_2 in weight_map[node_1].keys():
 			if weight_map[node_2][node_1] != 0:
@@ -50,28 +44,26 @@ for i in range(10000):
 			for col in cols:
 				if x == col:
 					data[col] = weight_map[node_2][node_1]
-	for node_1 in weight_map.keys():
-		for node_2 in weight_map[node_1].keys():
-			weight_map_1[node_1][node_2] = 100000000/weight_map[node_1][node_2]
-	alg = DijkstraAlgorithm(weight_map_1,vertices)
-	path_vertices = []
-	path_vertices = alg.compute_shortest_path(1,5)
-	path_links = []
-	for i in range(len(path_vertices)-1):
-		y_1 = "Y"+repr((path_vertices[i],path_vertices[i+1]))
-		y_2 = "Y"+repr((path_vertices[i+1],path_vertices[i]))
-		if y_1 in cols:
-			path_links.append(y_1)
-		elif y_2 in cols:
-			path_links.append(y_2)
+	alg = YenAlgorithm(weight_map,vertices,1,5,4)
+	paths_vertices = []
+	paths_vertices = alg.compute_shortest_paths()
+	paths_links = []
+	for i in range(4):
+		for j in range(len(paths_vertices[i])-1):
+			y_1 = "Y"+str(i+1)+repr((paths_vertices[i][j],paths_vertices[i][j+1]))
+			y_2 = "Y"+str(i+1)+repr((paths_vertices[i][j+1],paths_vertices[i][j]))
+			if y_1 in cols:
+				paths_links.append(y_1)
+			elif y_2 in cols:
+				paths_links.append(y_2)
 	for i in cols_Y:
 		data[i]=0
 	for i in cols_Y:
-		for j in path_links:
+		for j in paths_links:
 			if i==j:
 				data[i] = 1
 	df = df.append(data, ignore_index = True)
 	for node_1 in weight_map.keys():
 		for node_2 in weight_map[node_1].keys():
 			weight_map[node_1][node_2] = 0
-df.to_csv('data_bandwidth.csv',index=False)
+df.to_csv('data_8_8_yen.csv',index=False)
