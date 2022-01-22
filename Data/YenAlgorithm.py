@@ -17,7 +17,7 @@ class YenAlgorithm(object):
     def compute_shortest_paths(self):
         paths =[]
         alg = DijkstraAlgorithm(self._weight_map,self._vertices)
-        path_0 = alg.compute_shortest_path(1,5)
+        path_0 = alg.compute_shortest_path(1,4)
         paths.append(path_0)
         B = []
         for i in range(1,self.K):
@@ -35,7 +35,7 @@ class YenAlgorithm(object):
                         weight[rootPath[m]][node_2] = 9999999999
                         weight[node_2][rootPath[m]] = 9999999999
                 alg_d = DijkstraAlgorithm(weight,self._vertices)
-                spurpath = alg_d.compute_shortest_path(spurNode,5)
+                spurpath = alg_d.compute_shortest_path(spurNode,4)
                 rootPath.pop()
                 rootPath.extend(spurpath)
                 path.path_vertices = copy.deepcopy(rootPath)
@@ -56,3 +56,24 @@ class YenAlgorithm(object):
             paths.append(copy.deepcopy(B[0].path_vertices))
             B.pop(0)
         return paths
+# weight_map={}
+# temp = 0
+# with open('metric_data.txt') as f:
+#     for line in f:
+#         strt = line
+#         strt2 = strt.split(':')
+#         my_result = list(map(int, strt2[0].split(',')))
+#         if (temp!=my_result[0]):
+#             weight_map[my_result[0]]={}
+#         weight_map[my_result[0]][my_result[1]] = int(strt2[1])
+#         temp = my_result[0]
+# vertices = [1,2,3,4,5,6,7,8,9,10]
+# alg = YenAlgorithm(weight_map,vertices,1,4,10)
+# paths_vertices = alg.compute_shortest_paths()
+# paths_length = []
+# for path in paths_vertices:
+#     s = 0
+#     for i in range(len(path)-1):
+#         s+= weight_map[path[i]][path[i+1]]
+#     paths_length.append(s)
+# print(paths_length)
