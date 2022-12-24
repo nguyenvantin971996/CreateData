@@ -33,7 +33,9 @@ for i in range(1,5):
 		cols.append(strx)
 		cols_Y.append(strx)
 df = pd.DataFrame(columns=cols)
-for ii in range(500000):
+for ii in range(50000):
+	if ii%1000 == 0:
+		print(ii)
 	for node_1 in weight_map.keys():
 		for node_2 in weight_map[node_1].keys():
 			if weight_map[node_2][node_1] != 0:
@@ -48,7 +50,7 @@ for ii in range(500000):
 			for col in cols:
 				if x == col:
 					data[col] = weight_map[node_2][node_1]
-	alg = YenAlgorithm(weight_map,vertices,1,5,4)
+	alg = YenAlgorithm(weight_map,vertices,1,9,4)
 	paths_vertices = []
 	paths_vertices = alg.compute_shortest_paths()
 	paths_links = []
@@ -70,4 +72,4 @@ for ii in range(500000):
 	for node_1 in weight_map.keys():
 		for node_2 in weight_map[node_1].keys():
 			weight_map[node_1][node_2] = 0
-df.to_csv('data_18_18_yen.csv',index=False)
+df.to_csv('data_18_18_yen_3.csv',index=False)

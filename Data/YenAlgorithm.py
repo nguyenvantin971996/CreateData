@@ -17,7 +17,7 @@ class YenAlgorithm(object):
     def compute_shortest_paths(self):
         paths =[]
         alg = DijkstraAlgorithm(self._weight_map,self._vertices)
-        path_0 = alg.compute_shortest_path(1,4)
+        path_0 = alg.compute_shortest_path(self._source_vertex,self._destination_vertex)
         paths.append(path_0)
         B = []
         for i in range(1,self.K):
@@ -35,7 +35,7 @@ class YenAlgorithm(object):
                         weight[rootPath[m]][node_2] = 9999999999
                         weight[node_2][rootPath[m]] = 9999999999
                 alg_d = DijkstraAlgorithm(weight,self._vertices)
-                spurpath = alg_d.compute_shortest_path(spurNode,4)
+                spurpath = alg_d.compute_shortest_path(spurNode,self._destination_vertex)
                 rootPath.pop()
                 rootPath.extend(spurpath)
                 path.path_vertices = copy.deepcopy(rootPath)
